@@ -4,13 +4,20 @@
 ![npm](https://img.shields.io/npm/v/node-red-contrib-ui-actions)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-ui-actions)
 
-Custom node-red dashboard controls that support dynamic actions:
+Custom node-red dashboard controls that support dynamic actions
 
-- Text input
+### Text input
 
+Available actions:
 
-## How it works:
+* Set input value (value)
+* Disable input field (disable)
+* Enable input field (enable)
+* Hide field (hide)
+* Show field (show)
+* Get value to the output connection (get)
 
+![text input](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.gif)
 
 ## To install: 
 

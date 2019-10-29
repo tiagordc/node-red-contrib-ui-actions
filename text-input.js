@@ -67,8 +67,31 @@ module.exports = function (RED) {
                 $scope.config = config;
             }
 
+            var action = undefined;
+
             if (msg) {
-                console.log(msg);
+
+                if (typeof msg.payload === 'string' || typeof msg.payload === 'number') {
+
+                    action = 'value';
+                    $scope.value = msg.payload.toString();
+
+                }
+                else if (typeof msg.payload === 'object') {
+                    
+                    if (msg.payload.hasOwnProperty("action") && typeof msg.payload.action === 'string') {
+                        action = msg.payload.action.toLowerCase();
+                    }
+                    else {
+                        action = 'value';
+                    }
+
+                    if (action === 'value') {
+                        $scope.value = msg.payload.value;
+                    }
+
+                }
+
             }
 
             if (document) {
@@ -83,6 +106,28 @@ module.exports = function (RED) {
                         var card = elem.closest("md-card");
                         card.classList.remove("nr-dashboard-template");
                         card.classList.add("nr-dashboard-textinput");
+
+                        console.log(action);
+
+                        switch (action) {
+                            case 'disable':
+                                elem.disabled = true;
+                                card.classList.add("nr-dashboard-disabled");
+                                break;
+                            case 'enable':
+                                elem.disabled = false;
+                                card.classList.remove("nr-dashboard-disabled");
+                                break;
+                            case 'hide':
+                                card.style.display = 'none';
+                                break;
+                            case 'show':
+                                card.style.display = '';
+                                break;
+                            case 'get':
+                                $scope.send({payload: elem.value});
+                                break;
+                        }
 
                     } else {
                         
@@ -117,8 +162,6 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
 
         var node = this;
-        
-        node.warn(JSON.stringify(RED.nodes));
 
         var done = ui.addWidget({
             node: node,             // controlling node

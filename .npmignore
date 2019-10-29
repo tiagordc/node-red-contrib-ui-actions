@@ -1,6 +1,7 @@
 
 # Images
 *.png
+*.gif
 
 # Logs
 logs
