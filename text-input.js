@@ -3,10 +3,6 @@
 // References:
 //https://github.com/node-red/node-red-dashboard/wiki/Creating-New-Dashboard-Widgets
 //https://github.com/Adorkable/node-red-contrib-ui-led/blob/master/ledUtility.js
-//https://github.com/node-red/node-red-dashboard/blob/master/src/components/ui-component/templates/text-input.html
-//https://github.com/node-red/node-red-dashboard/blob/master/nodes/ui_text_input.js
-//https://github.com/node-red/node-red-dashboard/blob/master/nodes/ui_text_input.html
-//https://github.com/node-red/node-red-ui-nodes/blob/master/node-red-node-ui-list/ui_list.js
 
 module.exports = function (RED) {
 
