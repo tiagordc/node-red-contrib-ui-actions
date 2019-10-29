@@ -1,11 +1,12 @@
 'use strict';
 
+// References:
 //https://github.com/node-red/node-red-dashboard/wiki/Creating-New-Dashboard-Widgets
+//https://github.com/Adorkable/node-red-contrib-ui-led/blob/master/ledUtility.js
 //https://github.com/node-red/node-red-dashboard/blob/master/src/components/ui-component/templates/text-input.html
 //https://github.com/node-red/node-red-dashboard/blob/master/nodes/ui_text_input.js
 //https://github.com/node-red/node-red-dashboard/blob/master/nodes/ui_text_input.html
 //https://github.com/node-red/node-red-ui-nodes/blob/master/node-red-node-ui-list/ui_list.js
-//https://github.com/Adorkable/node-red-contrib-ui-led/blob/master/ledUtility.js
 
 module.exports = function (RED) {
 
@@ -66,6 +67,10 @@ module.exports = function (RED) {
                 $scope.config = config;
             }
 
+            if (msg) {
+                console.log(msg);
+            }
+
             if (document) {
 
                 const attemptUpdate = () => {
@@ -87,11 +92,9 @@ module.exports = function (RED) {
                         });
 
                     }
-                }
-                
-                attemptUpdate();
 
-                console.log(config);
+                };
+                attemptUpdate();
 
             }
             
@@ -113,7 +116,9 @@ module.exports = function (RED) {
 
         RED.nodes.createNode(this, config);
 
-		var node = this;
+        var node = this;
+        
+        node.warn(JSON.stringify(RED.nodes));
 
         var done = ui.addWidget({
             node: node,             // controlling node
@@ -142,6 +147,6 @@ module.exports = function (RED) {
 
     };
 
-    RED.nodes.registerType("ui-text-input", TextInput);
+    RED.nodes.registerType("ui_text-input", TextInput);
 
 };
