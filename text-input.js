@@ -44,6 +44,8 @@ module.exports = function (RED) {
 
     function controller(config) {
 
+        var passthru = config.passthru ? '$scope.send({payload: $scope.value});' : '';
+
         var fn = String.raw`
 
         ${utils.literals.observeDOM("const observeDOM")}
@@ -68,10 +70,9 @@ module.exports = function (RED) {
             if (msg) {
 
                 if (typeof msg.payload === 'string' || typeof msg.payload === 'number') {
-
                     action = 'value';
                     $scope.value = msg.payload.toString();
-
+                    ${passthru}
                 }
                 else if (typeof msg.payload === 'object') {
                     
@@ -84,6 +85,7 @@ module.exports = function (RED) {
 
                     if (action === 'value') {
                         $scope.value = msg.payload.value;
+                        ${passthru}
                     }
 
                 }
