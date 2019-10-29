@@ -52,7 +52,6 @@ module.exports = function (RED) {
 
         $scope.value = "";
         $scope.valueChanged = function (value) {
-            console.log(value);
             $scope.send({payload: value});
         };
 
@@ -70,7 +69,7 @@ module.exports = function (RED) {
             if (msg) {
 
                 if (typeof msg.payload === 'string' || typeof msg.payload === 'number') {
-                    action = 'value';
+                    action = 'set';
                     $scope.value = msg.payload.toString();
                     ${passthru}
                 }
@@ -80,10 +79,10 @@ module.exports = function (RED) {
                         action = msg.payload.action.toLowerCase();
                     }
                     else {
-                        action = 'value';
+                        action = 'set';
                     }
 
-                    if (action === 'value') {
+                    if (action === 'set') {
                         $scope.value = msg.payload.value;
                         ${passthru}
                     }

@@ -10,7 +10,7 @@ Custom node-red dashboard controls that support dynamic actions
 
 Available actions:
 
-* Set input value (value)
+* Set input value (set)
 * Disable input field (disable)
 * Enable input field (enable)
 * Hide field (hide)
