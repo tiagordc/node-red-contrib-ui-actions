@@ -1,0 +1,28 @@
+{
+  "name": "node-red-contrib-ui-actions",
+  "version": "0.0.1",
+  "description": "node-red custom widgets",
+  "node-red": {
+    "nodes": {
+      "ui-text-input": "text-input.js"
+    }
+  },
+  "dependencies": {
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagordc/node-red-contrib-ui-actions.git"
+  },
+  "keywords": [
+    "node-red",
+    "node",
+    "ui"
+  ],
+  "author": "Tiago Costa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tiagordc/node-red-contrib-ui-actions/issues"
+  },
+  "homepage": "https://github.com/tiagordc/node-red-contrib-ui-actions#readme"
+}
