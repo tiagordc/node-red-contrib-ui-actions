@@ -13,6 +13,21 @@
     </div>
 
     <div class="form-row">
+        <label for="node-input-mode"><i class="fa fa-keyboard-o"></i> Mode</label>
+        <select style="width:128px" id="node-input-mode">
+            <option value="text">text input</option>
+            <option value="email">email address</option>
+            <option value="password">password</option>
+            <option value="number">number</option>
+            <option value="tel">telephone input</option>
+            <option value="color">color picker</option>
+            <option value="time">time picker</option>
+            <option value="week">week picker</option>
+            <option value="month">month picker</option>
+        </select>
+    </div>
+
+    <div class="form-row">
         <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
         <input type="text" id="node-input-action" placeholder="" style="width: 70%;">
         <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">Available actions: Set, Get, Disable, Enable, Hide, Show</span>
@@ -36,20 +51,11 @@
     </div>
 
     <div class="form-row">
-        <label for="node-input-mode"><i class="fa fa-keyboard-o"></i> Mode</label>
-        <select style="width:128px" id="node-input-mode">
-            <option value="text">text input</option>
-            <option value="email">email address</option>
-            <option value="password">password</option>
-            <option value="number">number</option>
-            <option value="tel">telephone input</option>
-            <option value="color">color picker</option>
-            <option value="time">time picker</option>
-            <option value="week">week picker</option>
-            <option value="month">month picker</option>
-        </select>
-        <label for="node-input-delay" style="text-align:right; width:100px"><i class="fa fa-clock-o"></i> Delay (ms)</label>
+        <label for="node-input-change"><i class="fa fa-bolt"></i> On change</label>
+        <input type="checkbox" id="node-input-change" style="display:inline-block; width:auto; margin: 0;">
+        <span style="padding: 0 5px"> output after </span>
         <input type="text" style="width:58px" id="node-input-delay">
+        <span>(ms)</span>
     </div>
 
     <div class="form-row">
@@ -99,13 +105,14 @@
             height: { value: 0 },
             passthru: { value: true },
             mode: { value: 'text', required: true },
+            change: { value: true },
             delay: { value: 300, validate: RED.validators.number() },
             topic: { value: '' }
         },
         inputs: 1,
         outputs: 1,
         icon: "text.png",
-        paletteLabel: "ui Input",
+        paletteLabel: "ui input",
         label: function () {
             return this.name || "ui input";
         },

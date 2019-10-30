@@ -9,13 +9,26 @@ module.exports = function (RED) {
     var ui = undefined;
     var utils = require('./ui');
 
-    function model(config) {
+    function model(config, node) {
         return function (msg, value) {
 
+            var action = config.action;
+            var val = config.write;
+
+            if (config.actionType === 'msg' || config.actionType === 'flow' || config.actionType === 'global') {
+                action = RED.util.evaluateNodeProperty(config.action, config.actionType, node, msg);
+            }
+
+            if (config.writeType === 'msg' || config.writeType === 'flow' || config.writeType === 'global') {
+                val = RED.util.evaluateNodeProperty(config.write, config.writeType, node, msg);
+            }
 
             return {
                 msg: {
-                    payload: msg.payload
+                    payload: {
+                        action: action,
+                        value: val
+                    }
                 }
             };
 
@@ -28,11 +41,6 @@ module.exports = function (RED) {
         var delay = config.delay || 0;
 
         return String.raw`
-
-        <style>
-
-        </style>
-
         <md-input-container class="md-block" flex md-is-error="false" ng-class="{'has-label': config.label}">
             <label ng-bind-html="config.label"></label>
             <md-tooltip ng-if="config.tooltip" md-delay="700" md-direction="bottom" ng-bind-html="config.tooltip"></md-tooltip>
@@ -45,6 +53,7 @@ module.exports = function (RED) {
     function controller(config) {
 
         var passthru = config.passthru ? '$scope.send({payload: $scope.value});' : '';
+        var changed = config.change ? '$scope.send({payload: value});' : '';
 
         var fn = String.raw`
 
@@ -52,7 +61,7 @@ module.exports = function (RED) {
 
         $scope.value = "";
         $scope.valueChanged = function (value) {
-            $scope.send({payload: value});
+            ${changed}
         };
 
         const updateWithScope = (msg) => {
@@ -160,20 +169,25 @@ module.exports = function (RED) {
 
         var node = this;
 
+        var height = 1;
+        if (config.height > 0) height = config.height;
+
+        // https://github.com/node-red/node-red-dashboard/blob/master/ui.js
+
         var done = ui.addWidget({
             node: node,             // controlling node
             order: config.order,    // placeholder for position in page
             group: config.group,    // belonging Dashboard group
             width: config.width,    // width of widget
-            height: config.height,  // height of widget
+            height: height,  // height of widget
             format: view(config),   // HTML/Angular code
             templateScope: "local",	// scope of HTML/Angular(local/global)*
             emitOnlyNewValues: false,
             forwardInputMessages: false,
             storeFrontEndInputAsState: false,
-            beforeEmit: model(config),
+            beforeEmit: model(config, node),
             initController: controller(config),
-            beforeSend: function (msg, orig) { // needs beforeSend to message contents to be sent back to runtime 
+            beforeSend: function (msg, orig) { // callback to prepare the message that is sent to the output
                 if (orig) {
                     return orig.msg;
                 }
