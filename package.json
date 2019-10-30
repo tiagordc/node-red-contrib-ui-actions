@@ -4,7 +4,8 @@
   "description": "node-red custom widgets",
   "node-red": {
     "nodes": {
-      "ui_text-input": "text-input.js"
+      "ui_text-input": "text-input.js",
+      "ui_ui-action": "ui-action.js"
     }
   },
   "dependencies": {

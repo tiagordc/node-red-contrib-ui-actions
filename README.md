@@ -8,7 +8,7 @@ Custom node-red dashboard controls that support different actions
 
 To report an issue use the project [GitHub](https://github.com/tiagordc/node-red-contrib-ui-actions/issues) page
 
-### Text input
+### Text Input
 
 Available actions:
 
@@ -19,11 +19,15 @@ Available actions:
 * Show field (show)
 * Get value to the output connection (get)
 
-**Configuration:**
+**Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.png)
 
-**How it works:**
+**How it works:**\
 ![text input](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.gif)
+
+### UI Action
+
+Allows to call any of the above actions in a selected noded
 
 ## To install: 
 
