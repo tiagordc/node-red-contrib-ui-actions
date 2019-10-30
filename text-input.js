@@ -113,8 +113,6 @@ module.exports = function (RED) {
                         card.classList.remove("nr-dashboard-template");
                         card.classList.add("nr-dashboard-textinput");
 
-                        console.log(action);
-
                         switch (action) {
                             case 'disable':
                                 elem.disabled = true;

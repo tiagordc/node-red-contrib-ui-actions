@@ -1,19 +1,8 @@
 <script type="text/x-red" data-template-name="ui_ui-action">
 
     <div class="form-row">
-        <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
-        <input type="text" id="node-input-group">
-    </div>
-
-    <div class="form-row">
-        <label><i class="fa fa-object-group"></i> Size</label>
-        <input type="hidden" id="node-input-width">
-        <input type="hidden" id="node-input-height">
-        <button class="editor-button" id="node-input-size"></button>
-    </div>
-
-    <div class="form-row node-input-target-row node-input-target-list-row" style="min-height: 100px">
-        <div id="node-input-complete-target-container-div"></div>
+        <label><i class="fa fa-sign-out"></i> Target</label>
+        <select id="node-input-target"></select>
     </div>
 
     <div class="form-row">
@@ -29,25 +18,14 @@
         category: 'dashboard',
         color: '#cc66ff',
         defaults: {
-            group: { type: 'ui_group', required: true },
+            group: { value: '' },
             order: { value: 0 },
-            width: {
-                value: 0, validate: function (v) {
-                    var width = v || 0;
-                    var currentGroup = $('#node-input-group').val() || this.group;
-                    var groupNode = RED.nodes.node(currentGroup);
-                    var valid = !groupNode || +width <= +groupNode.width;
-                    $("#node-input-size").toggleClass("input-error", !valid);
-                    return valid;
-                }
-            },
-            height: { value: 0 },
-            links: { value: [] },
+            target: { required: true },
             topic: { value: "" },
             name: { value: "" }
         },
         inputs: 1,
-        outputs: 1,
+        outputs: 0,
         paletteLabel: "ui action",
         icon: "empty.png",
         label: function () {
@@ -57,47 +35,16 @@
 
             var node = this;
 
-            $("#node-input-size").elementSizer({
-                width: "#node-input-width",
-                height: "#node-input-height",
-                group: "#node-input-group"
-            });
-
-            node.links = node.links || [];
-            
-            this._resize = function() {
-                var rows = $("#dialog-form>div:not(.node-input-target-list-row)");
-                var height = $("#dialog-form").height();
-                for (var i=0;i<rows.length;i++) {
-                    height -= $(rows[i]).outerHeight(true);
-                }
-                var editorRow = $("#dialog-form>div.node-input-target-list-row");
-                editorRow.css("height",height+"px");
-            };
-
-            var dirList = $("#node-input-complete-target-container-div").css({width: "100%", height: "100%"})
-                .treeList({multi:true}).on("treelistitemmouseover", function(e, item) {
-                    item.node.highlighted = true;
-                    item.node.dirty = true;
-                    RED.view.redraw();
-                }).on("treelistitemmouseout", function(e, item) {
-                    item.node.highlighted = false;
-                    item.node.dirty = true;
-                    RED.view.redraw();
-                });
-                
             var candidateNodes = RED.nodes.filterNodes( {type: "ui_text-input" });
-
-            var allChecked = true;
-            var items = [];
-            var nodeItemMap = {};
+            
+            var select = $('#node-input-target');
 
             candidateNodes.forEach(function(n) {
-                var isChecked = node.links.indexOf(n.id) !== -1;
-                allChecked = allChecked && isChecked;
+
+                var isChecked = node.target === n.id;
                 var nodeDef = RED.nodes.getType(n.type);
                 var label;
-                var sublabel;
+
                 if (nodeDef) {
                     var l = nodeDef.label;
                     label = (typeof l === "function" ? l.call(n) : l)||"";
@@ -105,18 +52,21 @@
                 if (!nodeDef || !label) {
                     label = n.type;
                 }
-                nodeItemMap[n.id] = { node: n, label: label, sublabel: '', selected: isChecked };
-                items.push(nodeItemMap[n.id]);
+
+                var option = new Option(label, n.id);
+                select.append(option);
+
             });
 
-            dirList.treeList('data', items);
-            
         },
         oneditsave: function() {
-            this.links = $("#node-input-complete-target-container-div").treeList('selected').map(function(i) { return i.node.id });
-        },
-        oneditresize: function(size) {
-            this._resize();
+            if (!this.target) return;
+            var node = this;
+            var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
+            if (candidates.length !== 1) return;
+            var targetNode = candidates[0];
+            this.group = targetNode.group;
+            this.order = targetNode.order + 1;
         }
     });
 

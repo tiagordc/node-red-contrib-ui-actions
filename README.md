@@ -8,7 +8,7 @@ Custom node-red dashboard controls that support different actions
 
 To report an issue use the project [GitHub](https://github.com/tiagordc/node-red-contrib-ui-actions/issues) page
 
-### Text Input
+## Text Input
 
 Available actions:
 
@@ -25,7 +25,7 @@ Available actions:
 **How it works:**\
 ![text input](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.gif)
 
-### UI Action
+## UI Action
 
 Allows to call any of the above actions in a selected noded
 
