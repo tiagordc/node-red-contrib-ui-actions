@@ -12,8 +12,6 @@ module.exports = function (RED) {
     function model(config, node) {
         return function (msg, value) {
 
-            node.warn('ui input beforeEmit: ' + JSON.stringify(msg));
-
             var action = config.action;
             var val = config.write;
 
@@ -37,7 +35,7 @@ module.exports = function (RED) {
         };
     }
 
-    function view(config) {
+    function view(config) { 
 
         var id = "txt_" + config.id.replace(/[^\w]/g, "");
         var delay = config.delay || 0;
@@ -52,8 +50,9 @@ module.exports = function (RED) {
 
     }
 
-    function controller(config) {
+    function controller(node, config) {
 
+        var id = node.id.replace(/[^\w]/g, "");
         var passthru = config.passthru ? '$scope.send({payload: $scope.value});' : '';
         var changed = config.change ? '$scope.send({payload: value});' : '';
 
@@ -62,9 +61,7 @@ module.exports = function (RED) {
         ${utils.literals.observeDOM("const observeDOM")}
 
         $scope.value = "";
-        $scope.valueChanged = function (value) {
-            ${changed}
-        };
+        $scope.valueChanged = function (value) { ${changed} };
 
         const updateWithScope = (msg) => {
             
@@ -73,33 +70,6 @@ module.exports = function (RED) {
             if (!config) {
                 config = ${JSON.stringify(config)};
                 $scope.config = config;
-            }
-
-            var action = undefined;
-
-            if (msg) {
-
-                if (typeof msg.payload === 'string' || typeof msg.payload === 'number') {
-                    action = 'set';
-                    $scope.value = msg.payload.toString();
-                    ${passthru}
-                }
-                else if (typeof msg.payload === 'object') {
-                    
-                    if (msg.payload.hasOwnProperty("action") && typeof msg.payload.action === 'string') {
-                        action = msg.payload.action.toLowerCase();
-                    }
-                    else {
-                        action = 'set';
-                    }
-
-                    if (action === 'set') {
-                        $scope.value = msg.payload.value;
-                        ${passthru}
-                    }
-
-                }
-
             }
 
             if (document) {
@@ -115,32 +85,36 @@ module.exports = function (RED) {
                         card.classList.remove("nr-dashboard-template");
                         card.classList.add("nr-dashboard-textinput");
 
-                        switch (action) {
-                            case 'disable':
-                                elem.disabled = true;
-                                card.classList.add("nr-dashboard-disabled");
-                                break;
-                            case 'enable':
-                                elem.disabled = false;
-                                card.classList.remove("nr-dashboard-disabled");
-                                break;
-                            case 'hide':
-                                card.style.display = 'none';
-                                break;
-                            case 'show':
-                                card.style.display = '';
-                                break;
-                            case 'get':
-                                $scope.send({payload: elem.value});
-                                break;
+                        var actions = {
+                            set: function(msg) { 
+                                if (msg == null) return;
+                                if (typeof msg.payload === 'string' || typeof msg.payload === 'number') { $scope.value = msg.payload.toString(); ${passthru} }
+                                else if (typeof msg.payload === 'object') { $scope.value = msg.payload.value; ${passthru} }
+                            },
+                            get: function() { $scope.send({ payload: elem.value }); },
+                            hide: function() { card.style.display = 'none'; },
+                            show: function() { card.style.display = ''; },
+                            disable: function() { elem.disabled = true; card.classList.add("nr-dashboard-disabled"); },
+                            enable: function() { elem.disabled = false; card.classList.remove("nr-dashboard-disabled"); }
+                        };
+
+                        var action = 'set';
+                        if (msg && typeof msg.payload === 'object' && msg.payload.hasOwnProperty("action") && typeof msg.payload.action === 'string') {
+                            action = msg.payload.action.toLowerCase();
                         }
+
+                        if (typeof actions[action] === 'function') {
+                            if (actions[action].length === 0) actions[action]();
+                            else actions[action](msg);
+                        }
+
+                        if (typeof window._nrui === 'undefined') window._nrui = {};
+                        window._nrui['_${id}'] = actions;
 
                     } else {
                         
                         // HACK: is there a proper way to wait for this node's element to be rendered?
-                        observeDOM(document, (change) => {
-                            attemptUpdate();
-                        });
+                        observeDOM(document, (change) => attemptUpdate());
 
                     }
 
@@ -186,7 +160,7 @@ module.exports = function (RED) {
             forwardInputMessages: false,
             storeFrontEndInputAsState: false,
             beforeEmit: model(config, node),
-            initController: controller(config),
+            initController: controller(node, config),
             beforeSend: function (msg, orig) { // callback to prepare the message that is sent to the output
                 if (orig) {
                     return orig.msg;

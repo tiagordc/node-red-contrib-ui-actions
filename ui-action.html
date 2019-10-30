@@ -28,22 +28,21 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('ui_ui-action', {
-        category: 'dashboard',
+        category: 'ui',
         color: '#cc66ff',
         defaults: {
             action: { value: "set", required: true, validate: RED.validators.typedInput("actionType") },
             actionType: { value: "str" },
             write: { value: "payload", required: false, validate: RED.validators.typedInput("writeType") },
             writeType: { value: "msg" },
-            // group: { value: '' },
-            // order: { value: 0 },
+            group: { value: '' },
+            order: { value: 0 },
             target: { required: true },
-            links: { value: [] },
             name: { value: "" }
         },
         inputs: 1,
         outputs: 0,
-        paletteLabel: "ui action",
+        paletteLabel: "action",
         icon: "empty.png",
         label: function () {
             return this.name || "ui action";
@@ -71,6 +70,7 @@
                 }
 
                 var option = new Option(label, n.id);
+                option.selected = isChecked;
                 select.append(option);
 
             });
@@ -98,13 +98,12 @@
         },
         oneditsave: function() {
             if (!this.target) return;
-            // var node = this;
-            // var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
-            // if (candidates.length !== 1) return;
-            // var targetNode = candidates[0];
-            this.links = [ node.target ];
-            // this.group = targetNode.group;
-            // this.order = targetNode.order + 1;
+            var node = this;
+            var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
+            if (candidates.length !== 1) return;
+            var targetNode = candidates[0];
+            this.group = targetNode.group;
+            this.order = targetNode.order + 1;
         }
     });
 

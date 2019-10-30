@@ -1,67 +1,8 @@
 'use strict';
 
-// References:
-//https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/common/60-link.js#L39
-
-
-/**
- * on text input each action is a functio:
- * window._nr_uia['control id'].disable = function (value)
- * on action call these functions
- */
-
 module.exports = function (RED) {
 
     var ui = undefined;
-    var utils = require('./ui');
-
-    function model(node, config) {
-        return function (msg, value) {
-
-            var action = config.action;
-            var val = config.write;
-
-            if (config.actionType === 'msg' || config.actionType === 'flow' || config.actionType === 'global') {
-                action = RED.util.evaluateNodeProperty(config.action, config.actionType, node, msg);
-            }
-
-            if (config.writeType === 'msg' || config.writeType === 'flow' || config.writeType === 'global') {
-                val = RED.util.evaluateNodeProperty(config.write, config.writeType, node, msg);
-            }
-
-            return {
-                msg: {
-                    payload: {
-                        action: action,
-                        value: val
-                    }
-                }
-            };
-
-        };
-    }
-
-    function controller(node, config) {
-
-        var fn = String.raw`
-
-        $scope.value = "";
-
-        const updateWithScope = (msg) => {
-            
-            var config = ${JSON.stringify(config)};
-
-            console.log(config.target + ' ' + JSON.stringify(msg));
-            
-        };
-
-        $scope.$watch('msg', updateWithScope);
-
-        `;
-
-        return Function("$scope", "events", fn);
-
-    };
 
     function UiAction(config) {
 
@@ -69,42 +10,6 @@ module.exports = function (RED) {
 
 		var node = this;
 		
-        node.on('input', function (msg, nodeSend, nodeDone) {
-
-            var action = config.action;
-            var val = config.write;
-
-            if (config.actionType === 'msg' || config.actionType === 'flow' || config.actionType === 'global') {
-                action = RED.util.evaluateNodeProperty(config.action, config.actionType, node, msg);
-            }
-
-            if (config.writeType === 'msg' || config.writeType === 'flow' || config.writeType === 'global') {
-                val = RED.util.evaluateNodeProperty(config.write, config.writeType, node, msg);
-            }
-
-            //node.warn(config.target + ' ' + action + ' ' + val);
-            var event = "node:" + config.target;
-
-            msg.payload = {
-                action: action,
-                value: val
-            };
-
-            msg._event = event;
-
-            node.warn('ui action emit ' + JSON.stringify(msg));
-            RED.events.emit(event, msg);
-
-			nodeSend(msg);
-            nodeDone();
-            
-        });
-
-        node.on("close",function() {
-            node.status({});
-        });
-
-        /**
         if (ui === undefined) {
             ui = RED.require("node-red-dashboard")(RED);
         }
@@ -123,15 +28,64 @@ module.exports = function (RED) {
             forwardInputMessages: false,
             storeFrontEndInputAsState: false,
             format: "<div></div>",
-            beforeEmit: model(node, config),
-            initController: controller(node, config)
+            beforeEmit: function(msg) {
+
+                var action = config.action;
+                var val = config.write;
+    
+                if (config.actionType === 'msg' || config.actionType === 'flow' || config.actionType === 'global') {
+                    action = RED.util.evaluateNodeProperty(config.action, config.actionType, node, msg);
+                }
+    
+                if (config.writeType === 'msg' || config.writeType === 'flow' || config.writeType === 'global') {
+                    val = RED.util.evaluateNodeProperty(config.write, config.writeType, node, msg);
+                }
+    
+                return {
+                    msg: {
+                        payload: {
+                            action: action,
+                            value: val,
+                            target: config.target,
+                            targetKey: '_' + config.target.replace(/[^\w]/g, "")
+                        }
+                    }
+                };
+
+            },
+            initController: function($scope) {
+
+                const updateWithScope = (msg) => {
+        
+                    if (!msg) return;
+                    if (!msg.payload) return;
+                    if (!msg.payload.action) return;
+                    if (!msg.payload.target) return;
+                    
+                    if (typeof window._nrui === 'undefined') return;
+                    if (typeof window._nrui[msg.payload.targetKey] === 'undefined') return;
+        
+                    var actionName = msg.payload.action.toString().toLowerCase();
+                    if (typeof window._nrui[msg.payload.targetKey][actionName] !== 'function') return;
+                    
+                    var actionFn = window._nrui[msg.payload.targetKey][actionName];
+                    if (actionFn.length === 0) actionFn();
+                    else {
+                        actionFn(msg);
+                    }
+                    
+                };
+        
+                $scope.$watch('msg', updateWithScope);
+
+            }
         });
 
         node.on("close",function() {
             node.status({});
             done();
         });
-**/
+
     };
 
     RED.nodes.registerType("ui_ui-action", UiAction);

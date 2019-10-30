@@ -80,7 +80,7 @@
 <script type="text/javascript">
 
     RED.nodes.registerType('ui_text-input', {
-        category: 'dashboard',
+        category: 'ui',
         color: '#cc66ff',
         defaults: {
             action: { value: "set", required: true, validate: RED.validators.typedInput("actionType") },
@@ -112,7 +112,7 @@
         inputs: 1,
         outputs: 1,
         icon: "text.png",
-        paletteLabel: "ui input",
+        paletteLabel: "input",
         label: function () {
             return this.name || "ui input";
         },
