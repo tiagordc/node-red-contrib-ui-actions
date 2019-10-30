@@ -12,6 +12,8 @@ module.exports = function (RED) {
     function model(config, node) {
         return function (msg, value) {
 
+            node.warn('ui input beforeEmit: ' + JSON.stringify(msg));
+
             var action = config.action;
             var val = config.write;
 

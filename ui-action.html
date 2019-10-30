@@ -6,6 +6,19 @@
     </div>
 
     <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="" style="width: 70%;">
+        <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">Available actions: Set, Get, Disable, Enable, Hide, Show</span>
+        <input type="hidden" id="node-input-actionType">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-write"><i class="fa fa-pencil"></i> Value</label>
+        <input type="text" id="node-input-write" style="width:70%;" />
+        <input type="hidden" id="node-input-writeType">
+    </div>
+
+    <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="" style="width: 70%;">
     </div>
@@ -18,10 +31,14 @@
         category: 'dashboard',
         color: '#cc66ff',
         defaults: {
-            group: { value: '' },
-            order: { value: 0 },
+            action: { value: "set", required: true, validate: RED.validators.typedInput("actionType") },
+            actionType: { value: "str" },
+            write: { value: "payload", required: false, validate: RED.validators.typedInput("writeType") },
+            writeType: { value: "msg" },
+            // group: { value: '' },
+            // order: { value: 0 },
             target: { required: true },
-            topic: { value: "" },
+            links: { value: [] },
             name: { value: "" }
         },
         inputs: 1,
@@ -58,15 +75,36 @@
 
             });
 
+            if (this.actionType == null || this.actionType === 'string' || this.actionType === 'none') {
+                this.actionType = "str";
+            }
+            $("#node-input-actionType").val(this.actionType);
+            $("#node-input-action").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-actionType"),
+                types: ['str', 'msg', 'flow', 'global', 'env'] 
+            });
+
+            if (this.writeType == null || this.writeType === 'string' || this.writeType === 'none') {
+                this.writeType = "str";
+            }
+            $("#node-input-writeType").val(this.writeType);
+            $("#node-input-write").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-writeType"),
+                types: ['str', 'msg', 'flow', 'global', 'env'] 
+            });
+
         },
         oneditsave: function() {
             if (!this.target) return;
-            var node = this;
-            var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
-            if (candidates.length !== 1) return;
-            var targetNode = candidates[0];
-            this.group = targetNode.group;
-            this.order = targetNode.order + 1;
+            // var node = this;
+            // var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
+            // if (candidates.length !== 1) return;
+            // var targetNode = candidates[0];
+            this.links = [ node.target ];
+            // this.group = targetNode.group;
+            // this.order = targetNode.order + 1;
         }
     });
 
