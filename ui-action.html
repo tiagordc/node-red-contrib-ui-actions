@@ -8,7 +8,7 @@
     <div class="form-row">
         <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
         <input type="text" id="node-input-action" placeholder="" style="width: 70%;">
-        <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">Available actions: Set, Get, Disable, Enable, Hide, Show</span>
+        <span id="actionType-help" style="display: block; padding-left: 106px; color: gray; font-size: x-small;"></span>
         <input type="hidden" id="node-input-actionType">
     </div>
 
@@ -57,8 +57,10 @@
 
             var node = this;
 
-            var candidateNodes = RED.nodes.filterNodes( {type: "ui_text-input" });
-            
+            var nodesTxt = RED.nodes.filterNodes( {type: "ui_text-input" });
+            var nodesBtn = RED.nodes.filterNodes( {type: "ui_ui-button" });
+            var candidateNodes = [].concat(nodesTxt, nodesBtn);
+
             var select = $('#node-input-target');
 
             candidateNodes.forEach(function(n) {
@@ -81,20 +83,32 @@
 
             });
 
-            if (this.actionType == null || this.actionType === 'string' || this.actionType === 'none') {
-                this.actionType = "str";
-            }
-            $("#node-input-actionType").val(this.actionType);
+            select.on('change', (function() {
+
+                var help = $('#actionType-help');
+                var nodeObj = RED.nodes.node(this.value);
+
+                if (nodeObj) {
+                    switch (nodeObj.type) {
+                        case "ui_text-input":
+                            help.text('Available actions: Set, Get, Disable, Enable, Hide, Show');
+                            break;
+                        case "ui_ui-button":
+                            help.text('Available actions: Click, Disable, Enable, Hide, Show');
+                            break;
+                        default:
+                            help.text('');
+                    }
+                }
+                
+            }));
+
             $("#node-input-action").typedInput({ 
                 default: 'str', 
                 typeField: $("#node-input-actionType"),
                 types: ['str', 'msg', 'flow', 'global', 'env'] 
             });
 
-            if (this.writeType == null || this.writeType === 'string' || this.writeType === 'none') {
-                this.writeType = "str";
-            }
-            $("#node-input-writeType").val(this.writeType);
             $("#node-input-write").typedInput({ 
                 default: 'str', 
                 typeField: $("#node-input-writeType"),
@@ -104,10 +118,8 @@
         },
         oneditsave: function() {
             if (!this.target) return;
-            var node = this;
-            var candidates = RED.nodes.filterNodes({}).filter(function(x) { return x.id === node.target; })
-            if (candidates.length !== 1) return;
-            var targetNode = candidates[0];
+            var targetNode = RED.nodes.node(this.target);
+            if (!targetNode) return;
             this.group = targetNode.group;
             this.order = targetNode.order + 1;
             if (this.passthru == null) this.passthru = false;

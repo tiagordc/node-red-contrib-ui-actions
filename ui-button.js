@@ -1,19 +1,5 @@
 'use strict';
 
-//https://github.com/node-red/node-red-dashboard/blob/master/nodes/ui_button.js
-//https://github.com/node-red/node-red-dashboard/blob/master/src/components/ui-component/templates/button.html
-
-/**
-<md-button class="md-raised"
-            ng-click="me.buttonClick()"
-            aria-label="{{'button' + me.item.label}}"
-            ng-style="{'background-color':me.item.getText(), 'color':me.item.getColor(), 'z-index':1, 'padding':'0px'}"
-            >
-    <ui-icon ng-show="me.item.icon.length" icon="{{me.item.icon}}" ng-style="{color:me.item.getColor()}"></ui-icon>
-    <span ng-bind-html="me.item.getLabel()"></span>
-    <md-tooltip ng-if="me.item.getTooltip().length" md-delay="700" md-direction="bottom" ng-bind-html="me.item.getTooltip()"></md-tooltip>
-</md-button>
- */
 module.exports = function (RED) {
 
     var ui = undefined;
@@ -22,9 +8,18 @@ module.exports = function (RED) {
     function model(node, config) {
         return function (msg, value) {
 
+            var action = config.action;
+
+            if (config.actionType === 'msg' || config.actionType === 'flow' || config.actionType === 'global') {
+                action = RED.util.evaluateNodeProperty(config.action, config.actionType, node, msg);
+            }
+
             return {
                 msg: {
-                    payload: ""
+                    payload: {
+                        action: action,
+                        value: null
+                    }
                 }
             };
 
@@ -33,10 +28,20 @@ module.exports = function (RED) {
     
     function view(node, config) { 
 
-        var id = "btn_" + config.id.replace(/[^\w]/g, "");
+        var id = "btn_" + node.id.replace(/[^\w]/g, "");
+
+        var style = "";
+        if (config.color) style += `color:'${config.color}';`; 
+
+        var icon = '';
+        if (config.icon) icon = String.raw`<ui-icon icon="${config.icon}" style="${style}"></ui-icon>`;
+
+        if (config.bgcolor) style += `background-color:'${config.bgcolor}';`; 
+        style += "z-index:1, padding:'0px';";
 
         return String.raw`
-        <md-button class="md-raised" aria-label="{{'button' + config.label}}" id="${id}">
+        <md-button class="md-raised" ng-click="buttonClick()" aria-label="{{'button' + config.label}}" id="${id}" style="${style}">
+            ${icon}
             <span ng-bind-html="config.label"></span>
             <md-tooltip ng-if="config.tooltip" md-delay="700" md-direction="bottom" ng-bind-html="config.tooltip"></md-tooltip>
         </md-button>
@@ -46,12 +51,18 @@ module.exports = function (RED) {
 
     function controller(node, config) {
 
+        var id = node.id.replace(/[^\w]/g, "");
+
         var fn = String.raw`
 
         ${utils.literals.observeDOM("const observeDOM")}
 
         const updateWithScope = (msg) => {
-            
+
+            $scope.buttonClick = function () { 
+                if (msg) $scope.send(msg);
+            };
+
             var config = $scope.$eval("config");
 
             if (!config) {
@@ -63,14 +74,39 @@ module.exports = function (RED) {
 
                 const attemptUpdate = () => {
 
-                    var id = "btn_" + config.id.replace(/[^\w]/g, "");
-                    const elem = document.getElementById(id);
+                    const elem = document.getElementById('btn_${id}');
 
                     if (elem) {
 
                         var card = elem.closest("md-card");
                         card.classList.remove("nr-dashboard-template");
                         card.classList.add("nr-dashboard-button");
+
+                        var actions = {
+                            element: elem,
+                            click: function(msg) { $scope.send(msg); },
+                            hide: function() { card.style.display = 'none'; },
+                            show: function() { card.style.display = ''; },
+                            disable: function() { elem.disabled = true; card.classList.add("nr-dashboard-disabled"); },
+                            enable: function() { elem.disabled = false; card.classList.remove("nr-dashboard-disabled"); }
+                        };
+
+                        if (msg) {
+
+                            var action = 'click';
+                            if (typeof msg.payload === 'object' && msg.payload.hasOwnProperty("action") && typeof msg.payload.action === 'string') {
+                                action = msg.payload.action.toLowerCase();
+                            }
+    
+                            if (typeof actions[action] === 'function') {
+                                if (actions[action].length === 0) actions[action]();
+                                else actions[action](msg);
+                            }
+    
+                        }
+
+                        if (typeof window._nrui === 'undefined') window._nrui = {};
+                        window._nrui['_${id}'] = actions;
 
                     } else {
                         

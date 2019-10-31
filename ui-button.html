@@ -13,6 +13,13 @@
     </div>
 
     <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="" style="width: 70%;">
+        <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">Available actions: Click, Disable, Enable, Hide, Show</span>
+        <input type="hidden" id="node-input-actionType">
+    </div>
+
+    <div class="form-row">
         <label for="node-input-icon"><i class="fa fa-picture-o"></i> Icon</label>
         <input type="text" id="node-input-icon" placeholder="optional icon ">
     </div>
@@ -38,21 +45,6 @@
     </div>
 
     <div class="form-row">
-        <label style="width:auto" for="node-input-payload"><i class="fa fa-envelope-o"></i> When clicked, send:</label>
-    </div>
-
-    <div class="form-row">
-        <label for="node-input-payload" style="padding-left: 25px; margin-right: -25px">Payload</label>
-        <input type="text" id="node-input-payload" style="width:70%">
-        <input type="hidden" id="node-input-payloadType">
-    </div>
-
-    <div class="form-row">
-        <label for="node-input-topic" style="padding-left: 25px; margin-right: -25px">Topic</label>
-        <input type="text" id="node-input-topic">
-    </div>
-
-    <div class="form-row">
         <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> If <code>msg</code> arrives on input, emulate a button click: </label>
         <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top;">
     </div>
@@ -70,6 +62,8 @@
         category: 'ui',
         color: '#cc66ff',
         defaults: {
+            action: { value: "set", required: true, validate: RED.validators.typedInput("actionType") },
+            actionType: { value: "str" },
             name: {value: ''},
             group: {type: 'ui_group', required: true},
             order: {value: 0},
@@ -88,10 +82,7 @@
             tooltip: {value: ''},
             color: {value: ''},
             bgcolor: {value: ''},
-            icon: {value: ''},
-            payload: {value: '',validate: (RED.validators.hasOwnProperty('typedInput')?RED.validators.typedInput('payloadType'):function(v) { return true})},
-            payloadType: { value: 'str'},
-            topic: {value: ''}
+            icon: {value: ''}
         },
         inputs: 1,
         outputs: 1,
@@ -108,11 +99,11 @@
                 group: "#node-input-group"
             });
 
-            $('#node-input-payload').typedInput({
-                default: 'str',
-                typeField: $("#node-input-payloadType"),
-                types: ['str','num','bool','json','bin','date','flow','global']
-            })
+            $("#node-input-action").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-actionType"),
+                types: ['str', 'msg', 'flow', 'global', 'env'] 
+            });
 
         }
     });

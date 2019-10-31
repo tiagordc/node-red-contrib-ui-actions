@@ -86,6 +86,7 @@ module.exports = function (RED) {
                         card.classList.add("nr-dashboard-textinput");
 
                         var actions = {
+                            element: elem,
                             set: function(msg) { 
                                 if (msg == null) return;
                                 if (typeof msg.payload === 'string' || typeof msg.payload === 'number') { 

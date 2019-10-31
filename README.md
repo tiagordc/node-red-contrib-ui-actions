@@ -31,8 +31,14 @@ Available actions:
 
 Available actions:
 
+* Emulate click (click)
 * Disable button (disable)
 * Enable button (enable)
+* Hide button (hide)
+* Show button (show)
+
+**Configuration:**\
+![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-button.png)
 
 ## UI Action
 
