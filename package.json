@@ -1,11 +1,12 @@
 {
   "name": "node-red-contrib-ui-actions",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "node-red custom widgets",
   "node-red": {
     "nodes": {
       "ui_text-input": "text-input.js",
-      "ui_ui-action": "ui-action.js"
+      "ui_ui-action": "ui-action.js",
+      "ui_ui-button": "ui-button.js"
     }
   },
   "dependencies": {
