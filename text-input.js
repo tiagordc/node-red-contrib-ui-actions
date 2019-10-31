@@ -53,7 +53,7 @@ module.exports = function (RED) {
     function controller(node, config) {
 
         var id = node.id.replace(/[^\w]/g, "");
-        var passthru = config.passthru ? '$scope.send({payload: $scope.value});' : '';
+        var passthru = config.passthru ? 'true' : 'false';
         var changed = config.change ? '$scope.send({payload: value});' : '';
 
         var fn = String.raw`
@@ -88,8 +88,18 @@ module.exports = function (RED) {
                         var actions = {
                             set: function(msg) { 
                                 if (msg == null) return;
-                                if (typeof msg.payload === 'string' || typeof msg.payload === 'number') { $scope.value = msg.payload.toString(); ${passthru} }
-                                else if (typeof msg.payload === 'object') { $scope.value = msg.payload.value; ${passthru} }
+                                if (typeof msg.payload === 'string' || typeof msg.payload === 'number') { 
+                                    $scope.value = msg.payload.toString(); 
+                                    if (${passthru} && msg.passthru !== false) {
+                                        $scope.send({payload: $scope.value});
+                                    }
+                                }
+                                else if (typeof msg.payload === 'object') { 
+                                    $scope.value = msg.payload.value; 
+                                    if (${passthru} && msg.payload.passthru !== false) {
+                                        $scope.send({payload: $scope.value});
+                                    }
+                                }
                             },
                             get: function() { $scope.send({ payload: elem.value }); },
                             hide: function() { card.style.display = 'none'; },

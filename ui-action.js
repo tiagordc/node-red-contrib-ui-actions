@@ -47,7 +47,8 @@ module.exports = function (RED) {
                             action: action,
                             value: val,
                             target: config.target,
-                            targetKey: '_' + config.target.replace(/[^\w]/g, "")
+                            targetKey: '_' + config.target.replace(/[^\w]/g, ""),
+                            passthru: config.passthru
                         }
                     }
                 };

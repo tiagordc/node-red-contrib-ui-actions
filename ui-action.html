@@ -19,6 +19,11 @@
     </div>
 
     <div class="form-row">
+        <label style="width:auto" for="node-input-passthru"><i class="fa fa-arrow-right"></i> Let <code>msg</code> pass through the target output </label>
+        <input type="checkbox" id="node-input-passthru" style="display:inline-block; width:auto; vertical-align:top; margin-left: 5px;">
+    </div>
+
+    <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="" style="width: 70%;">
     </div>
@@ -38,6 +43,7 @@
             group: { value: '' },
             order: { value: 0 },
             target: { required: true },
+            passthru: { value: false },
             name: { value: "" }
         },
         inputs: 1,
@@ -104,6 +110,7 @@
             var targetNode = candidates[0];
             this.group = targetNode.group;
             this.order = targetNode.order + 1;
+            if (this.passthru == null) this.passthru = false;
         }
     });
 
