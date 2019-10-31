@@ -31,12 +31,12 @@ module.exports = function (RED) {
         var id = "btn_" + node.id.replace(/[^\w]/g, "");
 
         var style = "";
-        if (config.color) style += `color:'${config.color}';`; 
+        if (config.color) style += `color:${config.color};`; 
 
         var icon = '';
         if (config.icon) icon = String.raw`<ui-icon icon="${config.icon}" style="${style}"></ui-icon>`;
 
-        if (config.bgcolor) style += `background-color:'${config.bgcolor}';`; 
+        if (config.bgcolor) style += `background-color:${config.bgcolor};`; 
         style += "z-index:1, padding:'0px';";
 
         return String.raw`
