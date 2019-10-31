@@ -4,9 +4,9 @@
 ![npm](https://img.shields.io/npm/v/node-red-contrib-ui-actions)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-ui-actions)
 
-Custom node-red dashboard controls that support different actions.
+Have you tried to disable a button in the node-red dashboard? Or set the value of a text input in a different flow?
 
-Have you tried to disable a button in the dashboard? Or set the value fo a text input in a different flow?
+This project is a set of custom dashboard nodes that support advanced control of the UI.
 
 To report an issue use the project [GitHub](https://github.com/tiagordc/node-red-contrib-ui-actions/issues) page
 
@@ -36,7 +36,7 @@ Available actions:
 
 ## UI Action
 
-Allows to call any of the above actions in a selected noded
+Allows to call any of the above actions in a target node
 
 **Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-action.png)
