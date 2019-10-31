@@ -1,4 +1,4 @@
-<script type="text/x-red" data-template-name="ui_ui-action">
+<script type="text/x-red" data-template-name="hidden-ui-action">
 
     <div class="form-row">
         <label><i class="fa fa-sign-out"></i> Target</label>
@@ -32,7 +32,7 @@
 
 <script type="text/javascript">
 
-    RED.nodes.registerType('ui_ui-action', {
+    RED.nodes.registerType('hidden-ui-action', {
         category: 'ui',
         color: '#cc66ff',
         defaults: {
@@ -112,7 +112,7 @@
             $("#node-input-write").typedInput({ 
                 default: 'str', 
                 typeField: $("#node-input-writeType"),
-                types: ['str', 'msg', 'flow', 'global', 'env'] 
+                types: ['str', 'num', 'msg', 'flow', 'global', 'env'] 
             });
 
         },

@@ -89,6 +89,6 @@ module.exports = function (RED) {
 
     };
 
-    RED.nodes.registerType("ui_ui-action", UiAction);
+    RED.nodes.registerType("hidden-ui-action", UiAction);
 
 };

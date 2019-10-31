@@ -60,7 +60,7 @@ module.exports = function (RED) {
         const updateWithScope = (msg) => {
 
             $scope.buttonClick = function () { 
-                if (msg) $scope.send(msg);
+                $scope.send(msg);
             };
 
             var config = $scope.$eval("config");
