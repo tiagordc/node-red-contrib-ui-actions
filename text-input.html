@@ -124,20 +124,12 @@
                 group: "#node-input-group"
             });
 
-            if (this.actionType == null || this.actionType === 'string' || this.actionType === 'none') {
-                this.actionType = "str";
-            }
-            $("#node-input-actionType").val(this.actionType);
             $("#node-input-action").typedInput({ 
                 default: 'str', 
                 typeField: $("#node-input-actionType"),
                 types: ['str', 'msg', 'flow', 'global', 'env'] 
             });
 
-            if (this.writeType == null || this.writeType === 'string' || this.writeType === 'none') {
-                this.writeType = "str";
-            }
-            $("#node-input-writeType").val(this.writeType);
             $("#node-input-write").typedInput({ 
                 default: 'str', 
                 typeField: $("#node-input-writeType"),

@@ -40,6 +40,17 @@ Available actions:
 **Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-button.png)
 
+## Light
+
+Available actions:
+
+* Set color (set)
+* Hide light (hide)
+* Show light (show)
+
+**Example:**\
+![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-light.png)
+
 ## UI Action
 
 Allows to call any of the above actions in a target node

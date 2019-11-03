@@ -1,0 +1,88 @@
+<script type="text/x-red" data-template-name="ui_ui-light">
+
+	<div class="form-row">
+        <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
+        <input type="text" id="node-input-group">
+    </div>
+
+    <div class="form-row">
+        <label><i class="fa fa-object-group"></i> Size</label>
+        <input type="hidden" id="node-input-width">
+        <input type="hidden" id="node-input-height">
+        <button class="editor-button" id="node-input-size"></button>
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-action"><i class="fa fa-tag"></i> Action</label>
+        <input type="text" id="node-input-action" placeholder="" style="width: 70%;">
+        <span style="display: block; padding-left: 106px; color: gray; font-size: x-small;">Available actions: Set, Hide, Show</span>
+        <input type="hidden" id="node-input-actionType">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-write"><i class="fa fa-pencil"></i> Color</label>
+        <input type="text" id="node-input-write" style="width:70%;" />
+        <input type="hidden" id="node-input-writeType">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name">
+    </div>
+    
+</script>
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('ui_ui-light',{
+        category: 'ui',
+        color: '#cc66ff',
+        defaults: {
+            action: { value: "set", required: true, validate: RED.validators.typedInput("actionType") },
+            actionType: { value: "str" },
+            write: { value: "payload", required: false, validate: RED.validators.typedInput("writeType") },
+            writeType: { value: "msg" },
+            name: {value: ''},
+            group: {type: 'ui_group', required: true},
+            order: {value: 0},
+            width: {value: 0, validate: function(v) {
+                    var width = v||0;
+                    var currentGroup = $('#node-input-group').val()||this.group;
+                    var groupNode = RED.nodes.node(currentGroup);
+                    var valid = !groupNode || +width <= +groupNode.width;
+                    $("#node-input-size").toggleClass("input-error",!valid);
+                    return valid;
+                }
+            },
+            height: {value: 0},
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "light.png",
+        paletteLabel: 'light',
+        label: function () {
+            return this.name || "light";
+        },
+        oneditprepare: function() {
+
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
+
+            $("#node-input-action").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-actionType"),
+                types: ['str', 'msg', 'flow', 'global', 'env'] 
+            });
+
+            $("#node-input-write").typedInput({ 
+                default: 'str', 
+                typeField: $("#node-input-writeType"),
+                types: ['str', 'msg', 'flow', 'global', 'env'] 
+            });
+
+        }
+    });
+</script>
