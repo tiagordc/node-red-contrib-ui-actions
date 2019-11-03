@@ -8,6 +8,9 @@ Have you tried to disable a button in the node-red dashboard? Or set the value o
 
 This project is a set of custom dashboard nodes that support advanced control of the UI.
 
+**Example of a text input:**\
+![text input](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.gif)
+
 To report an issue use the project [GitHub](https://github.com/tiagordc/node-red-contrib-ui-actions/issues) page
 
 ## Text Input
@@ -23,9 +26,6 @@ Available actions:
 
 **Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.png)
-
-**How it works:**\
-![text input](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/text-input.gif)
 
 ## Button
 
@@ -53,7 +53,7 @@ Available actions:
 
 ## UI Action
 
-Allows to call any of the above actions in a target node
+Allows to call any of the above actions in any node without a wire
 
 **Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-action.png)
