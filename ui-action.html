@@ -59,7 +59,8 @@
 
             var nodesTxt = RED.nodes.filterNodes( {type: "ui_text-input" });
             var nodesBtn = RED.nodes.filterNodes( {type: "ui_ui-button" });
-            var candidateNodes = [].concat(nodesTxt, nodesBtn);
+            var nodesLight = RED.nodes.filterNodes( {type: "ui_ui-light" });
+            var candidateNodes = [].concat(nodesTxt, nodesBtn, nodesLight);
 
             var select = $('#node-input-target');
 
@@ -95,6 +96,9 @@
                             break;
                         case "ui_ui-button":
                             help.text('Available actions: Click, Disable, Enable, Hide, Show');
+                            break;
+                        case "ui_ui-light":
+                            help.text('Available actions: Set, Hide, Show');
                             break;
                         default:
                             help.text('');
