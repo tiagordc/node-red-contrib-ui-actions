@@ -1,6 +1,18 @@
 <script type="text/x-red" data-template-name="hidden-ui-action">
 
     <div class="form-row">
+        <label for="node-input-group"><i class="fa fa-table"></i> Group</label>
+        <input type="text" id="node-input-group">
+    </div>
+
+    <div class="form-row">
+        <label><i class="fa fa-object-group"></i> Size</label>
+        <input type="hidden" id="node-input-width">
+        <input type="hidden" id="node-input-height">
+        <button class="editor-button" id="node-input-size"></button>
+    </div>
+
+    <div class="form-row">
         <label><i class="fa fa-sign-out"></i> Target</label>
         <select id="node-input-target"></select>
     </div>
@@ -40,14 +52,14 @@
             actionType: { value: "str" },
             write: { value: "payload", required: false, validate: RED.validators.typedInput("writeType") },
             writeType: { value: "msg" },
-            group: { value: '' },
+            group: { type: 'ui_group', required: true },
             order: { value: 0 },
             target: { required: true },
             passthru: { value: false },
             name: { value: "" }
         },
         inputs: 1,
-        outputs: 0,
+        outputs: 1,
         paletteLabel: "action",
         icon: "empty.png",
         label: function () {
@@ -92,7 +104,7 @@
                 if (nodeObj) {
                     switch (nodeObj.type) {
                         case "ui_text-input":
-                            help.text('Available actions: Set, Get, Disable, Enable, Hide, Show');
+                            help.text('Available actions: Set, Get, Retrieve, Disable, Enable, Hide, Show');
                             break;
                         case "ui_ui-button":
                             help.text('Available actions: Click, Disable, Enable, Hide, Show');
@@ -106,6 +118,12 @@
                 }
                 
             }));
+
+            $("#node-input-size").elementSizer({
+                width: "#node-input-width",
+                height: "#node-input-height",
+                group: "#node-input-group"
+            });
 
             $("#node-input-action").typedInput({ 
                 default: 'str', 

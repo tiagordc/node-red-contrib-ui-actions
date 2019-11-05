@@ -19,6 +19,7 @@ Available actions:
 
 * Set input value (set)
 * Get value to the output connection (get)
+* Retrieve value to an action node (retrieve)
 * Disable input field (disable)
 * Enable input field (enable)
 * Hide field (hide)
@@ -49,7 +50,7 @@ Available actions:
 * Show light (show)
 
 **Example:**\
-![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-light.png)
+![green light](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-light.png)
 
 ## UI Action
 

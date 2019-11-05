@@ -103,6 +103,7 @@ module.exports = function (RED) {
                                 }
                             },
                             get: function() { $scope.send({ payload: elem.value }); },
+                            retrieve: function() { return elem.value; },
                             hide: function() { card.style.display = 'none'; },
                             show: function() { card.style.display = ''; },
                             disable: function() { elem.disabled = true; card.classList.add("nr-dashboard-disabled"); },

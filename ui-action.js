@@ -14,8 +14,6 @@ module.exports = function (RED) {
             ui = RED.require("node-red-dashboard")(RED);
         }
 
-        RED.nodes.createNode(this, config);
-
         var node = this;
         
         var done = ui.addWidget({
@@ -70,7 +68,12 @@ module.exports = function (RED) {
                     if (typeof window._nrui[msg.payload.targetKey][actionName] !== 'function') return;
                     
                     var actionFn = window._nrui[msg.payload.targetKey][actionName];
-                    if (actionFn.length === 0) actionFn();
+                    if (actionFn.length === 0) {
+                        var result = actionFn();
+                        if (result) {
+                            $scope.send({payload: result});
+                        }
+                    }
                     else {
                         actionFn(msg);
                     }
@@ -79,6 +82,11 @@ module.exports = function (RED) {
         
                 $scope.$watch('msg', updateWithScope);
 
+            },
+            beforeSend: function (msg, orig) { // callback to prepare the message that is sent to the output
+                if (orig) {
+                    return orig.msg;
+                }
             }
         });
 
