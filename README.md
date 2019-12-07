@@ -4,7 +4,10 @@
 ![npm](https://img.shields.io/npm/v/node-red-contrib-ui-actions)
 ![npm](https://img.shields.io/npm/dm/node-red-contrib-ui-actions)
 
-Have you tried to disable a button in the node-red dashboard? Or set the value of a text input in a different flow?
+Have you tried to:
+- disable a button in the node-red dashboard? 
+- set the value of a text input in a different flow?
+- run some code when a dashboard tab is loaded?
 
 This project is a set of custom dashboard nodes that support advanced control of the UI.
 
