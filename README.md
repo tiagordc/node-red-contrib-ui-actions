@@ -56,6 +56,10 @@ Available actions:
 
 Allows to call any of the above actions in any node without a wire
 
+## UI Load
+
+Allows to start a flow when a dashboard tab is loaded
+
 **Configuration:**\
 ![configuration](https://raw.githubusercontent.com/tiagordc/node-red-contrib-ui-actions/master/ui-action.png)
 
