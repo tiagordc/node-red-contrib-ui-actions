@@ -7,7 +7,8 @@
       "ui_text-input": "text-input.js",
       "ui_ui-button": "ui-button.js",
       "ui_ui-light": "ui-light.js",
-      "hidden-ui-action": "ui-action.js"
+      "hidden-ui-action": "ui-action.js",
+      "hidden-ui-load": "ui-load.js"
     }
   },
   "dependencies": {
