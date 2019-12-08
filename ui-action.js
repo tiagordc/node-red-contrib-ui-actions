@@ -38,36 +38,40 @@ module.exports = function (RED) {
                 if (config.writeType === 'msg' || config.writeType === 'flow' || config.writeType === 'global') {
                     val = RED.util.evaluateNodeProperty(config.write, config.writeType, node, msg);
                 }
-    
-                return {
+
+                var result = {
                     msg: {
-                        payload: {
-                            action: action,
-                            value: val,
-                            target: config.target,
-                            targetKey: '_' + config.target.replace(/[^\w]/g, ""),
-                            passthru: config.passthru
-                        }
+                        action: action,
+                        value: val,
+                        target: config.target,
+                        targetKey: '_' + config.target.replace(/[^\w]/g, ""),
+                        passthru: config.passthru
                     }
                 };
+
+                Object.assign(result.msg, msg);
+                return result;
 
             },
             initController: function($scope) {
 
                 const updateWithScope = (msg) => {
-        
+    
                     if (!msg) return;
-                    if (!msg.payload) return;
-                    if (!msg.payload.action) return;
-                    if (!msg.payload.target) return;
+                    if (!msg.action) return;
+                    if (!msg.target) return;
                     
                     if (typeof window._nrui === 'undefined') return;
-                    if (typeof window._nrui[msg.payload.targetKey] === 'undefined') return;
+                    if (typeof window._nrui[msg.targetKey] === 'undefined') return;
         
-                    var actionName = msg.payload.action.toString().toLowerCase();
-                    if (typeof window._nrui[msg.payload.targetKey][actionName] !== 'function') return;
+                    var actionName = msg.action.toString().toLowerCase();
+                    if (typeof window._nrui[msg.targetKey][actionName] !== 'function') return;
                     
-                    var actionFn = window._nrui[msg.payload.targetKey][actionName];
+                    // if (msg.target === "4d30a55e.e0830c") {
+                    //     console.log(actionName, msg);
+                    // }
+
+                    var actionFn = window._nrui[msg.targetKey][actionName];
                     if (actionFn.length === 0) {
                         var result = actionFn();
                         if (result) {
