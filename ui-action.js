@@ -66,10 +66,20 @@ module.exports = function (RED) {
         
                     var actionName = msg.action.toString().toLowerCase();
                     if (typeof window._nrui[msg.targetKey][actionName] !== 'function') return;
-                    
+                 
                     // if (msg.target === "4d30a55e.e0830c") {
-                    //     console.log(actionName, msg);
+                    //     console.log(actionName + " " + msg._msgid);
                     // }
+
+                    if (msg._msgid) {
+                        if (!window._nrui.history) window._nrui.history = {};
+                        if (!window._nrui.history[msg.targetKey]) window._nrui.history[msg.targetKey] = [];
+                        var historyLen = window._nrui.history[msg.targetKey].length;
+                        var index = window._nrui.history[msg.targetKey].indexOf(msg._msgid);
+                        if (index >= 0 && index != historyLen - 1) return;
+                        if (index === -1) window._nrui.history[msg.targetKey].push(msg._msgid);
+                        //TODO: if len > 100
+                    }
 
                     var actionFn = window._nrui[msg.targetKey][actionName];
                     if (actionFn.length === 0) {
